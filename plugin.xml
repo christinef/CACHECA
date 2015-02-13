@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension point="org.eclipse.jdt.ui.javaCompletionProposalComputer"
+   		id ="cachecaproposals"
+   		name="CACHECA Proposals">
+   		<proposalCategory icon="cacheca.png"/>
+ 	</extension>
+    <extension point="org.eclipse.jdt.ui.javaCompletionProposalComputer"
+         id="cacheca"
+         name="CACHECA">
+      <javaCompletionProposalComputer
+            activate="true"
+            categoryId="CACHECA.cachecaproposals"
+            class="edu.ucdavis.cacheca.JavaCompletionProposals"
+            needsSortingAfterFiltering="false">
+      </javaCompletionProposalComputer>
+   </extension>
+   <extension point="org.eclipse.jdt.ui.javaCompletionProposalSorters">
+    <proposalSorter
+        id="CACHECA.cachecaSort"
+        name="CACHECA Sort"
+        class="edu.ucdavis.cacheca.NoSorter"/>
+	</extension>
+</plugin>
