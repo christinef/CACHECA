@@ -101,7 +101,7 @@ public class JavaCompletionProposals implements IJavaCompletionProposalComputer{
 		
 		List<ICompletionProposal> eclipseProposals = new ArrayList<ICompletionProposal>();
 		
-		int proposalFractionFromEclipse = 10;
+		int proposalFractionFromEclipse = 50;
 		if(jProps.length < proposalFractionFromEclipse){
 			proposalFractionFromEclipse = jProps.length;
 		}
@@ -202,8 +202,7 @@ public class JavaCompletionProposals implements IJavaCompletionProposalComputer{
 		
 		// merge common proposals and add to top of final list
 		int counter = 0;
-		int sentinel = eclipseProposals.size();
-		for (int j = 0; j < sentinel; j++) {
+		for (int j = 0; j < eclipseProposals.size(); j++) {
 			ICompletionProposal cp = eclipseProposals.get(counter);
 			String eclipseProposalString = cp.getDisplayString();
 			int parenIndex = eclipseProposalString.indexOf('(');
@@ -223,16 +222,51 @@ public class JavaCompletionProposals implements IJavaCompletionProposalComputer{
 			for (int i = 0; i < cachecaProposals.size(); i++) {
 				if (eclipseProposalString.equals(cachecaProposals.get(i).getDisplayString())){
 					finalProposals.add(cp);
-					counter--; eclipseProposals.remove(counter); 
+					counter--; 
+					eclipseProposals.remove(counter); 
 					cachecaProposals.remove(i);
 				}
 			}
 		}
 		
 		// take top suggestions, if the number of decalca ones is short
-		while (cachecaProposals.size() > 0 && cachecaProposals.size() < 5) {
-			finalProposals.add(cachecaProposals.get(0));
-			cachecaProposals.remove(0);
+		while (cachecaProposals.size() > 0 && cachecaProposals.size() < 3) {
+			String cachecaProposalString = cachecaProposals.get(0).getDisplayString();
+			
+			boolean foundFlag = false;
+			int checkSentinel = 0;
+			for(ICompletionProposal eclipseProposal : eclipseProposals) {
+				if (checkSentinel > 100) {
+					break;
+				}
+				String eclipseProposalString = eclipseProposal.getDisplayString();
+				int parenIndex = eclipseProposalString.indexOf('(');
+				int spaceIndex = eclipseProposalString.indexOf(' ');
+				if (parenIndex > 1 || spaceIndex > 1) {
+					int index;
+					if (spaceIndex < 1) {
+						index = parenIndex;
+					} else if (parenIndex < 1) {
+						index = spaceIndex;
+					} else {
+						index = Math.min(parenIndex, spaceIndex);
+					}
+					eclipseProposalString = eclipseProposalString.substring(0, index);
+				}
+				if (eclipseProposalString.equals(cachecaProposalString)) {
+					finalProposals.add(eclipseProposal);
+					cachecaProposals.remove(0);
+					eclipseProposals.remove(eclipseProposal);
+					foundFlag = true;
+					break;
+				}
+				checkSentinel++;
+			}	
+			
+			if (foundFlag == false) {
+				finalProposals.add(cachecaProposals.get(0));
+				cachecaProposals.remove(0);
+			}
 		}
 		
 		// interleave the rest
