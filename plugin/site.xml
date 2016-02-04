@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/CACHECAfeature_1.0.1.201503091343.jar" id="CACHECAfeature" version="1.0.1.201503091343">
+      <category name="CACHECA code completion engine"/>
+   </feature>
+   <category-def name="CACHECA code completion engine" label="CACHECA">
+      <description>
+         CACHECA, a cache model based code completion engine.
+      </description>
+   </category-def>
+</site>
